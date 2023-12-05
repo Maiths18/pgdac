@@ -7,6 +7,8 @@ const url = require('../url')
 let mcl = mongodb.MongoClient
 //create router instance
 let router = express.Router()
+//database name
+let dbName = 'miniprj'
 //create restapi
 router.post("/", (req, res) => {
     let obj = {
@@ -17,7 +19,7 @@ router.post("/", (req, res) => {
         if (err)
             console.log('Error in connection:- ', err)
         else {
-            let db = conn.db("nodedb")
+            let db = conn.db(dbName)
             db.collection('products').deleteOne(obj, (err, result) => {
                 if (err)
                     res.json({ 'delete': 'Error ' + err })
@@ -35,5 +37,39 @@ router.post("/", (req, res) => {
         }
     })
 })
+//Delete product from cart
+router.post("/deleteCart", (req, res) => {
+    let obj = {
+        "p_id": req.body.p_id,
+        "uname": req.body.uname
+    }
+    //connect to mongodb
+    mcl.connect(url, (err, conn) => {
+        if (err)
+            console.log('Error in connection:- ', err)
+        else {
+            let db = conn.db(dbName)
+            db.collection('cart').deleteOne(obj, (err, result) => {
+                if (err)
+                    res.json({ 'cartDelete': 'Error ' + err })
+                else {
+                    if (result.deletedCount != 0) {
+                        console.log(`Cart data from ${obj.uname} deleted`)
+                        res.json({ 'cartDelete': 'success' })
+                    }
+                    else {
+                        console.log('Cart Data Not deleted')
+                        res.json({ 'cartDelete': 'Record Not found' })
+                    }
+                    conn.close()
+                }
+            })
+        }
+    })
+})
+
+//Delete user
+//to be done by participants
+
 //export router
 module.exports = router
