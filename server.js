@@ -26,13 +26,3 @@ app.use("/delete", remov)
 app.listen(port, () => {
     console.log("Server listening port no:- ", port)
 })
-/*
-    >node server
-    Test following URLs with postman
-    http://localhost:8080/fetch     (get)
-    http://localhost:8080/insert    |
-    http://localhost:8080/update    |(post)
-    http://localhost:8080/delete    |
-    body -> raw -> json
-*/
-
